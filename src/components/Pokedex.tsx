@@ -1,4 +1,4 @@
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, FlatList, Text, ActivityIndicator } from "react-native";
 import PokemonListItem from "./PokemonListItem";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -33,6 +33,7 @@ export default function Pokedex() {
 					}
 				}}
 			/>
+			<ActivityIndicator size={"large"} animating={isFetching} style={styles.spinner} />
 		</View>
 	);
 }
@@ -50,5 +51,8 @@ const styles = StyleSheet.create({
 	},
 	pokemonListContainer: {
 		gap: 20,
+	},
+	spinner: {
+		marginVertical: 20,
 	},
 });
