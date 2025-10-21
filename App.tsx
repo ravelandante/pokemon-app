@@ -1,5 +1,5 @@
-import Pokedex from "./src/components/Pokedex";
+import Navigator from "./navigation/Navigator";
 
 export default function App() {
-	return <Pokedex />;
+	return <Navigator />;
 }
