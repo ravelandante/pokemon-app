@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteParams } from "./PokemonDetails";
 
 interface PokemonListItemProps {
 	name: string;
@@ -9,7 +10,7 @@ interface PokemonListItemProps {
 export default function PokemonListItem({ name }: PokemonListItemProps) {
 	const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 	return (
-		<TouchableOpacity onPress={() => navigation.navigate("PokemonDetails")}>
+		<TouchableOpacity onPress={() => navigation.navigate("PokemonDetails", { name } as RouteParams)}>
 			<View style={styles.listItem}>
 				<Text style={styles.text}>Name: {name}</Text>
 			</View>
