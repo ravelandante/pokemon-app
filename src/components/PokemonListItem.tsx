@@ -11,15 +11,19 @@ export default function PokemonListItem({ name }: PokemonListItemProps) {
 	const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 	return (
 		<TouchableOpacity onPress={() => navigation.navigate("PokemonDetails", { name } as RouteParams)}>
-			<View style={styles.listItem}>
-				<Text style={styles.text}>Name: {name}</Text>
+			<View style={styles.container}>
+				<Text style={styles.text}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
 			</View>
 		</TouchableOpacity>
 	);
 }
 
 const styles = StyleSheet.create({
-	listItem: {},
+	container: {
+		borderBottomColor: "#000",
+		borderBottomWidth: 1,
+		padding: 20,
+	},
 	text: {
 		fontSize: 18,
 	},

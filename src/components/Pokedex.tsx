@@ -26,7 +26,6 @@ export default function Pokedex() {
 				renderItem={({ item }) => <PokemonListItem name={item.name} />}
 				keyExtractor={(item) => item.name}
 				style={styles.pokemonList}
-				contentContainerStyle={styles.pokemonListContainer}
 				onEndReached={() => {
 					if (hasNextPage && !isFetchingNextPage) {
 						fetchNextPage();
@@ -47,10 +46,6 @@ const styles = StyleSheet.create({
 	},
 	pokemonList: {
 		width: "100%",
-		padding: 20,
-	},
-	pokemonListContainer: {
-		gap: 20,
 	},
 	spinner: {
 		marginVertical: 20,
