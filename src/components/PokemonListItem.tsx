@@ -6,8 +6,15 @@ interface PokemonListItemProps {
 
 export default function PokemonListItem({ name }: PokemonListItemProps) {
 	return (
-		<View>
-			<Text>Name: {name}</Text>
+		<View style={styles.listItem}>
+			<Text style={styles.text}>Name: {name}</Text>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	listItem: {},
+	text: {
+		fontSize: 18,
+	},
+});

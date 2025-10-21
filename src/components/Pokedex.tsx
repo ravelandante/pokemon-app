@@ -9,6 +9,8 @@ export default function Pokedex() {
 				data={pokemonList}
 				renderItem={({ item }) => <PokemonListItem name={item.name} />}
 				keyExtractor={(item) => item.id.toString()}
+				style={styles.pokemonList}
+				contentContainerStyle={styles.pokemonListContainer}
 			/>
 		</View>
 	);
@@ -20,5 +22,12 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		alignItems: "center",
 		justifyContent: "center",
+	},
+	pokemonList: {
+		width: "100%",
+		padding: 20,
+	},
+	pokemonListContainer: {
+		gap: 20,
 	},
 });
