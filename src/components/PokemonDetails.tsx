@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
-import { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
+import { useQuery } from "@tanstack/react-query";
 
 export interface RouteParams {
 	name: string;
@@ -13,12 +13,6 @@ interface PokemonAbilityResponse {
 	};
 }
 
-interface PokemonStats {
-	weight: number;
-	height: number;
-	abilities: string[];
-}
-
 const fetchPokemonStats = async (pokemonName: string) => {
 	const res = await fetch("https://pokeapi.co/api/v2/pokemon/" + pokemonName);
 	return res.json();
@@ -28,20 +22,17 @@ export default function PokemonDetails() {
 	const route = useRoute();
 	const { name } = route.params as RouteParams;
 
-	const [pokemonData, setPokemonData] = useState<PokemonStats | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	useEffect(() => {
-		setIsLoading(true);
-		fetchPokemonStats(name).then((data) => {
-			setPokemonData({
+	const { data: pokemonData, isLoading } = useQuery({
+		queryKey: ["pokemonStats", name],
+		queryFn: async () => {
+			const data = await fetchPokemonStats(name);
+			return {
 				weight: data.weight,
 				height: data.height,
 				abilities: data.abilities.map((ability: PokemonAbilityResponse) => ability.ability.name),
-			});
-		});
-		setIsLoading(false);
-	}, []);
+			};
+		},
+	});
 
 	return (
 		<View>
