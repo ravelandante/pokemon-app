@@ -1,5 +1,4 @@
 import { StyleSheet, View, FlatList, Text } from "react-native";
-import pokemonList from "../../assets/kanto.json";
 import PokemonListItem from "./PokemonListItem";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -14,7 +13,10 @@ export default function Pokedex() {
 			queryKey: ["pokemon"],
 			queryFn: fetchPokemon,
 			initialPageParam: 0,
-			getNextPageParam: (lastPage) => lastPage.offset,
+			getNextPageParam: (lastPage) => {
+				const url = new URL(lastPage.next);
+				return parseInt(url.searchParams.get("offset") || "0");
+			},
 		});
 
 	return (
@@ -25,6 +27,11 @@ export default function Pokedex() {
 				keyExtractor={(item) => item.name}
 				style={styles.pokemonList}
 				contentContainerStyle={styles.pokemonListContainer}
+				onEndReached={() => {
+					if (hasNextPage && !isFetchingNextPage) {
+						fetchNextPage();
+					}
+				}}
 			/>
 		</View>
 	);
