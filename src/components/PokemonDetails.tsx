@@ -3,7 +3,7 @@ import { useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 
 export interface RouteParams {
-	name: string;
+	id: number;
 }
 
 interface PokemonAbilityResponse {
@@ -13,14 +13,15 @@ interface PokemonAbilityResponse {
 	};
 }
 
-const fetchPokemonStats = async (pokemonName: string) => {
-	const res = await fetch("https://pokeapi.co/api/v2/pokemon/" + pokemonName);
+const fetchPokemonStats = async (pokemonUrl: string) => {
+	const res = await fetch(pokemonUrl);
 	return res.json();
 };
 
 export default function PokemonDetails() {
 	const route = useRoute();
-	const { name } = route.params as RouteParams;
+	const { id } = route.params as RouteParams;
+	const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
 	const { data: pokemonData, isLoading } = useQuery({
 		queryKey: ["pokemonStats", name],
@@ -37,11 +38,11 @@ export default function PokemonDetails() {
 	return (
 		<View>
 			<Text>Pokemon Details</Text>
-			<Text>Name: {name}</Text>
 			{isLoading || !pokemonData ? (
 				<Text>Loading...</Text>
 			) : (
 				<>
+					<Text>Name: {pokemonData.name}</Text>
 					<Text>Weight: {pokemonData.weight}</Text>
 					<Text>Height: {pokemonData.height}</Text>
 					<Text>Abilities: {pokemonData.abilities.join(", ")}</Text>

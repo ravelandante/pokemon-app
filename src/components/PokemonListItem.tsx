@@ -18,7 +18,7 @@ export default function PokemonListItem({ name, url }: PokemonListItemProps) {
 	const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
 	const { data: pokemonData } = useQuery({
-		queryKey: ["pokemonInfo", name],
+		queryKey: ["pokemonInfo", url],
 		queryFn: async () => {
 			const data = await fetchPokemon(url);
 			return data;
@@ -26,11 +26,12 @@ export default function PokemonListItem({ name, url }: PokemonListItemProps) {
 	});
 
 	const spriteUrl = pokemonData?.sprites.front_default;
+	const pokemonId = pokemonData?.id;
 
 	return (
 		spriteUrl && (
 			<TouchableOpacity
-				onPress={() => navigation.navigate("PokemonDetails", { name } as RouteParams)}
+				onPress={() => navigation.navigate("PokemonDetails", { id: pokemonId } as RouteParams)}
 			>
 				<View style={styles.container}>
 					<Text style={styles.text}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
