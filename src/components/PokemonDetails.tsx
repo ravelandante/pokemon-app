@@ -24,15 +24,15 @@ export default function PokemonDetails() {
 	const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
 	const { data: pokemonData, isLoading } = useQuery({
-		queryKey: ["pokemonStats", name],
-		queryFn: async () => {
-			const data = await fetchPokemonStats(name);
-			return {
-				weight: data.weight,
-				height: data.height,
-				abilities: data.abilities.map((ability: PokemonAbilityResponse) => ability.ability.name),
-			};
-		},
+		queryKey: ["pokemonInfo", pokemonUrl],
+		queryFn: () => fetchPokemonStats(pokemonUrl),
+		select: (data: any) => ({
+			name: data.name,
+			weight: data.weight,
+			height: data.height,
+			abilities: data.abilities.map((ability: PokemonAbilityResponse) => ability.ability.name),
+			sprites: data.sprites,
+		}),
 	});
 
 	return (
