@@ -26,3 +26,9 @@ export interface PokemonAbilityResponse {
 export interface ListToDetailsRouteParams {
 	id: number;
 }
+
+export interface Sprite {
+	key: keyof PokemonDetailsResponse["sprites"];
+	url: string | null;
+	displayName: string;
+}

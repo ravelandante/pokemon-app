@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import { PokemonDetailsResponse, PokemonAbilityResponse } from "../types/pokemon-types";
+import { PokemonDetailsResponse, PokemonAbilityResponse, Sprite } from "../types/pokemon-types";
 import { ListToDetailsRouteParams } from "../types/pokemon-types";
 import { useState } from "react";
 
@@ -42,15 +42,47 @@ export default function PokemonDetails() {
 	});
 
 	const availableSprites = [
-		pokemonData?.sprites.front_default,
-		pokemonData?.sprites.back_default,
-		pokemonData?.sprites.front_shiny,
-		pokemonData?.sprites.back_shiny,
-		pokemonData?.sprites.front_female,
-		pokemonData?.sprites.back_female,
-		pokemonData?.sprites.front_shiny_female,
-		pokemonData?.sprites.back_shiny_female,
-	].filter((sprite) => sprite !== null);
+		{
+			key: "front_default",
+			url: pokemonData?.sprites["front_default"],
+			displayName: "Front Default",
+		},
+		{
+			key: "back_default",
+			url: pokemonData?.sprites["back_default"],
+			displayName: "Back Default",
+		},
+		{
+			key: "front_shiny",
+			url: pokemonData?.sprites["front_shiny"],
+			displayName: "Front Shiny",
+		},
+		{
+			key: "back_shiny",
+			url: pokemonData?.sprites["back_shiny"],
+			displayName: "Back Shiny",
+		},
+		{
+			key: "front_female",
+			url: pokemonData?.sprites["front_female"],
+			displayName: "Front Female Default",
+		},
+		{
+			key: "back_female",
+			url: pokemonData?.sprites["back_female"],
+			displayName: "Back Female Default",
+		},
+		{
+			key: "front_shiny_female",
+			url: pokemonData?.sprites["front_shiny_female"],
+			displayName: "Front Female Shiny",
+		},
+		{
+			key: "back_shiny_female",
+			url: pokemonData?.sprites["back_shiny_female"],
+			displayName: "Back Female Shiny",
+		},
+	].filter((sprite) => sprite.url !== null) as Sprite[];
 
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -73,10 +105,10 @@ export default function PokemonDetails() {
 							}}
 						>
 							<View style={styles.pokemonImageContainer}>
-								{pokemonData.sprites?.front_default && (
+								{availableSprites.length > 0 && (
 									<Image
 										source={{
-											uri: availableSprites[currentSpriteIndex],
+											uri: availableSprites[currentSpriteIndex].url ?? "",
 										}}
 										style={styles.pokemonImage}
 										resizeMode="contain"
@@ -86,6 +118,9 @@ export default function PokemonDetails() {
 						</TouchableOpacity>
 						<Text style={styles.pokemonName}>
 							{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}
+						</Text>
+						<Text style={styles.spriteType}>
+							{availableSprites[currentSpriteIndex].displayName}
 						</Text>
 					</View>
 
@@ -199,6 +234,11 @@ const styles = StyleSheet.create({
 		fontSize: 28,
 		fontWeight: "bold",
 		color: "#2c3e50",
+		textAlign: "center",
+	},
+	spriteType: {
+		fontSize: 14,
+		color: "#375776ff",
 		textAlign: "center",
 	},
 
