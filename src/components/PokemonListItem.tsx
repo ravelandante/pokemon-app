@@ -6,23 +6,26 @@ import { useQuery } from "@tanstack/react-query";
 
 interface PokemonListItemProps {
 	name: string;
+	url: string;
 }
 
-const fetchPokemon = async (pokemonName: string) => {
-	const res = await fetch("https://pokeapi.co/api/v2/pokemon/" + pokemonName);
+const fetchPokemon = async (pokemonUrl: string) => {
+	const res = await fetch(pokemonUrl);
 	return res.json();
 };
 
-export default function PokemonListItem({ name }: PokemonListItemProps) {
+export default function PokemonListItem({ name, url }: PokemonListItemProps) {
 	const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-	const { data: spriteUrl } = useQuery({
-		queryKey: ["pokemonSprites", name],
+	const { data: pokemonData } = useQuery({
+		queryKey: ["pokemonInfo", name],
 		queryFn: async () => {
-			const data = await fetchPokemon(name);
-			return data.sprites.front_default;
+			const data = await fetchPokemon(url);
+			return data;
 		},
 	});
+
+	const spriteUrl = pokemonData?.sprites.front_default;
 
 	return (
 		spriteUrl && (
