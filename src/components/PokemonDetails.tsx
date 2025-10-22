@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Image } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { PokemonDetailsResponse, PokemonAbilityResponse } from "../types/pokemon-types";
@@ -31,20 +31,219 @@ export default function PokemonDetails() {
 	});
 
 	return (
-		<View>
-			<Text>Pokemon Details</Text>
+		<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 			{error ? (
-				<Text>Failed to fetch details</Text>
+				<View style={styles.errorContainer}>
+					<Text style={styles.errorIcon}>⚠️</Text>
+					<Text style={styles.errorText}>Failed to fetch Pokemon details</Text>
+				</View>
 			) : isLoading || !pokemonData ? (
-				<Text>Loading...</Text>
+				<View style={styles.loadingContainer}>
+					<ActivityIndicator size="large" color="#4A90E2" />
+					<Text style={styles.loadingText}>Loading Pokemon details...</Text>
+				</View>
 			) : (
 				<>
-					<Text>Name: {pokemonData.name}</Text>
-					<Text>Weight: {pokemonData.weight}</Text>
-					<Text>Height: {pokemonData.height}</Text>
-					<Text>Abilities: {pokemonData.abilities.join(", ")}</Text>
+					<View style={styles.headerSection}>
+						<View style={styles.pokemonImageContainer}>
+							{pokemonData.sprites?.front_default && (
+								<Image
+									source={{ uri: pokemonData.sprites.front_default }}
+									style={styles.pokemonImage}
+									resizeMode="contain"
+								/>
+							)}
+						</View>
+						<Text style={styles.pokemonName}>
+							{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}
+						</Text>
+					</View>
+
+					<View style={styles.statsSection}>
+						<Text style={styles.sectionTitle}>Stats</Text>
+						<View style={styles.statsGrid}>
+							<View style={styles.statCard}>
+								<Text style={styles.statIcon}>⚖️</Text>
+								<Text style={styles.statLabel}>Weight</Text>
+								<Text style={styles.statValue}>{pokemonData.weight / 10} kg</Text>
+							</View>
+							<View style={styles.statCard}>
+								<Text style={styles.statIcon}>📏</Text>
+								<Text style={styles.statLabel}>Height</Text>
+								<Text style={styles.statValue}>{pokemonData.height / 10} m</Text>
+							</View>
+						</View>
+					</View>
+
+					<View style={styles.abilitiesSection}>
+						<Text style={styles.sectionTitle}>Abilities</Text>
+						<View style={styles.abilitiesContainer}>
+							{pokemonData.abilities.map((ability, index) => (
+								<View key={index} style={styles.abilityCard}>
+									<Text style={styles.abilityText}>
+										{ability.charAt(0).toUpperCase() + ability.slice(1)}
+									</Text>
+								</View>
+							))}
+						</View>
+					</View>
 				</>
 			)}
-		</View>
+		</ScrollView>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "#f8f9fa",
+	},
+	contentContainer: {
+		paddingBottom: 30,
+	},
+
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		paddingVertical: 60,
+	},
+	loadingText: {
+		fontSize: 16,
+		color: "#6c757d",
+		marginTop: 16,
+		fontWeight: "500",
+	},
+
+	errorContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		paddingVertical: 60,
+		paddingHorizontal: 20,
+	},
+	errorIcon: {
+		fontSize: 48,
+		marginBottom: 16,
+	},
+	errorText: {
+		fontSize: 16,
+		color: "#6c757d",
+		textAlign: "center",
+		lineHeight: 24,
+	},
+
+	headerSection: {
+		backgroundColor: "#fff",
+		alignItems: "center",
+		paddingVertical: 30,
+		paddingHorizontal: 20,
+		marginHorizontal: 16,
+		marginTop: 16,
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 12,
+		elevation: 8,
+	},
+	pokemonImageContainer: {
+		width: 120,
+		height: 120,
+		backgroundColor: "#f8f9fa",
+		borderRadius: 60,
+		justifyContent: "center",
+		alignItems: "center",
+		marginBottom: 20,
+		borderWidth: 3,
+		borderColor: "#e9ecef",
+	},
+	pokemonImage: {
+		width: 100,
+		height: 100,
+	},
+	pokemonName: {
+		fontSize: 28,
+		fontWeight: "bold",
+		color: "#2c3e50",
+		textAlign: "center",
+	},
+
+	statsSection: {
+		marginHorizontal: 16,
+		marginTop: 20,
+	},
+	sectionTitle: {
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#2c3e50",
+		marginBottom: 16,
+		paddingLeft: 4,
+	},
+	statsGrid: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		gap: 12,
+	},
+	statCard: {
+		flex: 1,
+		backgroundColor: "#fff",
+		padding: 20,
+		borderRadius: 16,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 8,
+		elevation: 4,
+	},
+	statIcon: {
+		fontSize: 32,
+		marginBottom: 8,
+	},
+	statLabel: {
+		fontSize: 14,
+		color: "#6c757d",
+		fontWeight: "500",
+		marginBottom: 4,
+	},
+	statValue: {
+		fontSize: 18,
+		fontWeight: "bold",
+	},
+
+	abilitiesSection: {
+		marginHorizontal: 16,
+		marginTop: 20,
+	},
+	abilitiesContainer: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		gap: 12,
+	},
+	abilityCard: {
+		backgroundColor: "#fff",
+		paddingHorizontal: 16,
+		paddingVertical: 12,
+		borderRadius: 20,
+		shadowColor: "#000",
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 6,
+		elevation: 3,
+	},
+	abilityText: {
+		fontSize: 14,
+		fontWeight: "600",
+		color: "#2c3e50",
+	},
+});
