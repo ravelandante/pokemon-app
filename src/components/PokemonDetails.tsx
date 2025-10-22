@@ -1,17 +1,8 @@
 import { View, Text } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-
-export interface RouteParams {
-	id: number;
-}
-
-interface PokemonAbilityResponse {
-	ability: {
-		name: string;
-		url: string;
-	};
-}
+import { PokemonDetailsResponse, PokemonAbilityResponse } from "../types/pokemon-types";
+import { ListToDetailsRouteParams } from "../types/pokemon-types";
 
 const fetchPokemonStats = async (pokemonUrl: string) => {
 	const res = await fetch(pokemonUrl);
@@ -20,7 +11,7 @@ const fetchPokemonStats = async (pokemonUrl: string) => {
 
 export default function PokemonDetails() {
 	const route = useRoute();
-	const { id } = route.params as RouteParams;
+	const { id } = route.params as ListToDetailsRouteParams;
 	const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
 	const {
@@ -30,7 +21,7 @@ export default function PokemonDetails() {
 	} = useQuery({
 		queryKey: ["pokemonInfo", pokemonUrl],
 		queryFn: () => fetchPokemonStats(pokemonUrl),
-		select: (data: any) => ({
+		select: (data: PokemonDetailsResponse) => ({
 			name: data.name,
 			weight: data.weight,
 			height: data.height,

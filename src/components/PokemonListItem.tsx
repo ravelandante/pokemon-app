@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteParams } from "./PokemonDetails";
 import { useQuery } from "@tanstack/react-query";
+import { PokemonDetailsResponse } from "../types/pokemon-types";
+import { ListToDetailsRouteParams } from "../types/pokemon-types";
 
 interface PokemonListItemProps {
 	name: string;
@@ -19,10 +20,8 @@ export default function PokemonListItem({ name, url }: PokemonListItemProps) {
 
 	const { data: pokemonData } = useQuery({
 		queryKey: ["pokemonInfo", url],
-		queryFn: async () => {
-			const data = await fetchPokemon(url);
-			return data;
-		},
+		queryFn: () => fetchPokemon(url),
+		select: (data: PokemonDetailsResponse) => data,
 	});
 
 	const spriteUrl = pokemonData?.sprites.front_default;
@@ -31,7 +30,9 @@ export default function PokemonListItem({ name, url }: PokemonListItemProps) {
 	return (
 		spriteUrl && (
 			<TouchableOpacity
-				onPress={() => navigation.navigate("PokemonDetails", { id: pokemonId } as RouteParams)}
+				onPress={() =>
+					navigation.navigate("PokemonDetails", { id: pokemonId } as ListToDetailsRouteParams)
+				}
 			>
 				<View style={styles.container}>
 					<Text style={styles.text}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
