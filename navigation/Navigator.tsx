@@ -2,11 +2,19 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createStaticNavigation } from "@react-navigation/native";
 import Pokedex from "../src/components/Pokedex";
 import PokemonDetails from "../src/components/PokemonDetails";
+import { Image } from "react-native";
+
+const HeaderIcon = () => {
+	return <Image source={require("../assets/small-pokeball.png")} style={{ width: 40, height: 40 }} />;
+};
 
 const RootStack = createNativeStackNavigator({
 	screens: {
 		Pokedex: {
 			screen: Pokedex,
+			options: {
+				headerLeft: () => <HeaderIcon />,
+			},
 		},
 		PokemonDetails: {
 			screen: PokemonDetails,
