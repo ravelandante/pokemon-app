@@ -1,8 +1,17 @@
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Image } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	ScrollView,
+	ActivityIndicator,
+	Image,
+	TouchableOpacity,
+} from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { PokemonDetailsResponse, PokemonAbilityResponse } from "../types/pokemon-types";
 import { ListToDetailsRouteParams } from "../types/pokemon-types";
+import { useState } from "react";
 
 const fetchPokemonStats = async (pokemonUrl: string) => {
 	const res = await fetch(pokemonUrl);
@@ -13,6 +22,8 @@ export default function PokemonDetails() {
 	const route = useRoute();
 	const { id } = route.params as ListToDetailsRouteParams;
 	const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
+
+	const [currentSpriteIndex, setCurrentSpriteIndex] = useState(0);
 
 	const {
 		data: pokemonData,
@@ -30,6 +41,17 @@ export default function PokemonDetails() {
 		}),
 	});
 
+	const availableSprites = [
+		pokemonData?.sprites.front_default,
+		pokemonData?.sprites.back_default,
+		pokemonData?.sprites.front_shiny,
+		pokemonData?.sprites.back_shiny,
+		pokemonData?.sprites.front_female,
+		pokemonData?.sprites.back_female,
+		pokemonData?.sprites.front_shiny_female,
+		pokemonData?.sprites.back_shiny_female,
+	].filter((sprite) => sprite !== null);
+
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
 			{error ? (
@@ -45,15 +67,23 @@ export default function PokemonDetails() {
 			) : (
 				<>
 					<View style={styles.headerSection}>
-						<View style={styles.pokemonImageContainer}>
-							{pokemonData.sprites?.front_default && (
-								<Image
-									source={{ uri: pokemonData.sprites.front_default }}
-									style={styles.pokemonImage}
-									resizeMode="contain"
-								/>
-							)}
-						</View>
+						<TouchableOpacity
+							onPress={() => {
+								setCurrentSpriteIndex((currentSpriteIndex + 1) % availableSprites.length);
+							}}
+						>
+							<View style={styles.pokemonImageContainer}>
+								{pokemonData.sprites?.front_default && (
+									<Image
+										source={{
+											uri: availableSprites[currentSpriteIndex],
+										}}
+										style={styles.pokemonImage}
+										resizeMode="contain"
+									/>
+								)}
+							</View>
+						</TouchableOpacity>
 						<Text style={styles.pokemonName}>
 							{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}
 						</Text>
