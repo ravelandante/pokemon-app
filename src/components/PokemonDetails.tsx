@@ -23,7 +23,11 @@ export default function PokemonDetails() {
 	const { id } = route.params as RouteParams;
 	const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
-	const { data: pokemonData, isLoading } = useQuery({
+	const {
+		data: pokemonData,
+		isLoading,
+		error,
+	} = useQuery({
 		queryKey: ["pokemonInfo", pokemonUrl],
 		queryFn: () => fetchPokemonStats(pokemonUrl),
 		select: (data: any) => ({
@@ -38,7 +42,9 @@ export default function PokemonDetails() {
 	return (
 		<View>
 			<Text>Pokemon Details</Text>
-			{isLoading || !pokemonData ? (
+			{error ? (
+				<Text>Failed to fetch details</Text>
+			) : isLoading || !pokemonData ? (
 				<Text>Loading...</Text>
 			) : (
 				<>
